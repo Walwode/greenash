@@ -1,0 +1,158 @@
+html{
+    min-height:92%; /* make sure it is at least as tall as the viewport */
+    position:relative;
+	font-family: "Montserrat",sans-serif;
+}
+
+body{
+    height:94%; /* force the BODY element to match the height of the HTML element */
+	margin: 0;
+}
+
+#cloud-container {
+	/* position:absolute; */
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    overflow:hidden;
+    z-index:-1; /* Remove this line if it's not going to be a background! */
+	/* background-color: #00ff00; */
+}
+
+a {
+	color: #000;
+}
+
+#title-container {
+	height: 50px;
+	background-color: #000000;
+}
+
+#title {
+	line-height:50px;
+	text-align: center;
+	color: #ffffff;
+	letter-spacing: 2px;
+}
+
+#upper-container {
+	height: 60%;
+	/* background-color: #ff00ff; */
+}
+
+#lower-container {
+	height: 35%;
+	/* background-color: #00ffff; */
+}
+
+#team-table {
+	width: 100%;
+	height: 95%;
+}
+
+#team-table td {
+	padding: 50px;
+	background-color: #f1f1f1;
+	height: 50%;
+}
+
+.team-container-left {
+	height: 128px;
+	float: left;
+}
+
+.team-container-3 {
+    width: 33%;
+}
+
+.team-container-4 {
+    width: 25%;
+}
+
+.team-container-2 {
+    width: 50%;
+}
+
+.team-container-inlay {
+    background-color: #f1f1f1;
+	height: 90px;
+    margin-top: 12px;
+    margin-left: 12px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    padding-left: 12px;
+}
+
+.team-color {
+    float: left;
+    height: 100%;
+    margin-right: 10px;
+    width: 20px;
+}
+
+.team-name {
+	font-size: 1.2em;
+	font-weight: bold;
+	height: 60%;
+	padding-right: 10px;
+}
+
+.team-distance {
+	float: left;
+	background-image: url('../img/distance.png');
+	background-repeat: no-repeat;
+	background-size: 27px 27px;
+	padding-left: 40px;  /* width of the image plus a little extra padding */
+	display: block;  /* may not need this, but I've found I do */
+}
+
+@media screen and (min-width : 1025px)
+{
+	.team-text-big {
+		font-size: 1.8em;
+	}
+
+	.team-text-small {
+		font-size: 1.3em;
+		line-height: 2.0em;
+	}
+}
+
+@media screen and (max-width : 1024px)
+{
+	.team-text-big {
+		font-size: 1.2em;
+		line-height: 1.7em;
+	}
+	
+	.team-text-small {
+		font-size: 1.0em;
+		line-height: 1.7em;
+	}
+}
+
+.team-pace {
+	float: right;
+	padding-right: 20px;
+	background-image: url('../img/speed.svg');
+	background-repeat: no-repeat;
+	background-size: 30px 30px;
+	padding-left: 40px;  /* width of the image plus a little extra padding */
+	display: block;  /* may not need this, but I've found I do */
+}
+
+.chart-name {
+	text-align: center;
+	font-size: 2em;
+	font-weight: bold;
+	padding-bottom: 50px;
+}
+
+.gold {
+	color: #C39F76;
+}
+
+.grey {
+	color: #f1f1f1;
+}

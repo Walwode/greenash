@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# PlatformIO
+*.pio
+*.pioenvs
+*.piolibdeps
+*.vscode
+
+# Config
+php/sql.config
+esp/src/config.h
