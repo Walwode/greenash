@@ -7,9 +7,6 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266WiFi.h>
-// #include <HTTPClient.h>
-// #include <WebServer.h>
-// #include <WiFi.h>
 #include <SSD1306Wire.h>
 #include <Ticker.h>
 #include <WiFiManager.h>
@@ -21,9 +18,9 @@ Ticker ticker;
 
 // internet values
 char* data_name;
-int data_diameter = 80; // mm
-int data_faintInterval = 30;
-int data_pushInterval = 1000;
+int data_diameter = 80; // [mm]
+int data_faintInterval = 30; // [ms]
+int data_pushInterval = 1000; // [ms]
 boolean data_hasOled = false;
 
 // interrupt volatiles
@@ -107,7 +104,6 @@ void setupWiFi() {
 
 void getConfiguration() {
   ticker.attach(2.0, tick);
-  // atol(root["entryNo"].as<char*>());
   while (data_diameter == 0) {
     if (WiFi.status() == WL_CONNECTED) {
       HTTPClient http; // Object of class HTTPClient
@@ -124,16 +120,11 @@ void getConfiguration() {
 
         deserializeJson(doc, http.getString());
 
-        // const char* version = doc["version"]; // "1.0"
         JsonObject data_0 = doc["data"][0];
-        // const char* data_chipId = data_0["chipId"]; // "1"
-        // data_name = data_0["name"]; // "Johanniter Unfallhilfe e.V. Regionalverband Dresden"
-        // const char* data_active = data_0["active"]; // "1"
         data_diameter = data_0["diameter"].as<int>(); // "80"
         data_faintInterval = data_0["faintInterval"].as<int>(); // "30"
         data_pushInterval = data_0["pushInterval"].as<int>(); // "1000"
         data_hasOled = data_0["hasOled"]; // "0"
-        // const char* data_colorCode = data_0["colorCode"]; // "#12130F"
 
         Serial.println("[API] Configuration received");
       } else {
@@ -199,7 +190,6 @@ void updateDisplay() {
   display.drawString(0, 0, "Interrupts: " + String(cumulatedInterruptCounter));
   display.drawString(0, 15, "Speed: " + String(getAverageSpeed()) + "km/h");
   display.drawString(0, 25, "Distance: " + String(cumulatedDistance) + "m");
-  // display.drawString(0, 40, "D " + String(currentInterrupt) + "-" + String(lastInterrupt));
   display.drawString(0, 40, String(millis()));
   display.display();
 }

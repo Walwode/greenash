@@ -13,7 +13,8 @@ function getSqlInterface() {
 function sqlCommand($cmd) {
 	global $mysqli;
 	
-	$mysqli->query("SET NAMES 'utf8'");
+	// $mysqli->query("SET NAMES 'utf8'");
+	// die($cmd);
 	if (!$result = $mysqli->query($cmd)) {
 		echo "Sorry, the website is experiencing problems.";
 		echo "Error: Our query failed to execute and here is why: \n";
@@ -28,6 +29,17 @@ function sqlCommand($cmd) {
 function singleSqlCommand($sqlStatement) {
 	$result = sqlCommand($sqlStatement);
 	if ($row = $result->fetch_array()) return $row[0];
+}
+
+function updateSqlCommand($sqlStatement) {
+	$result = sqlCommand($sqlStatement);
+	$result->close();
+	closeSqlConnection();
+}
+
+function closeSqlInterface() {
+	global $mysqli;
+	return $mysqli->close();
 }
 
 function toValidSqlValue($value) {

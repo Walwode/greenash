@@ -29,6 +29,7 @@ function getChipData() {
 	
 	echoJson($output);
 	$result->close();
+	closeSqlInterface();
 }
 
 function logDeviceData() {
@@ -38,6 +39,6 @@ function logDeviceData() {
 	$speed				= toValidSqlValue($_GET['speed']);
 	$cumulatedDistance	= toValidSqlValue($_GET['cumulatedDistance']);
 	
-	if (sqlCommand("INSERT INTO GreenAsh_Log (chipId, dateTime, distance, speed, cumulatedDistance) VALUES ('$chipId', '$dateTime', '$distance','$speed', '$cumulatedDistance')")) echo "Entry created";
+	if (updateSqlCommand("INSERT INTO GreenAsh_Log (chipId, dateTime, distance, speed, cumulatedDistance) VALUES ('$chipId', '$dateTime', '$distance','$speed', '$cumulatedDistance')")) echo "Entry created";
 }
 ?>

@@ -26,6 +26,9 @@ switch ($action) {
 	case 'deleteLog':
 		deleteLog();
 		break;
+	case 'getTotals':
+		getTotals();
+		break;
 }
 
 function updateTeam() {
@@ -34,7 +37,7 @@ function updateTeam() {
 	$chipId = $_POST['chipId'];
 	
 	$sqlStatement = "UPDATE GreenAsh_Device SET `$field` = '$value' WHERE chipId = '$chipId'";
-	$result = sqlCommand($sqlStatement);
+	updateSqlCommand($sqlStatement);
 
 	echoJson($_POST);
 }
@@ -44,8 +47,8 @@ function deleteLog() {
 	
 	$sqlStatement = "DELETE FROM GreenAsh_Log";
 	if ($chipId != '') $sqlStatement = "DELETE FROM GreenAsh_Log WHERE chipId = '$chipId'";
+	updateSqlCommand($sqlStatement);
 
-	$result = sqlCommand($sqlStatement);
 	echoJson($_GET);
 }
 
@@ -80,9 +83,11 @@ function getTeams() {
 	while ($devices = $result->fetch_assoc()) {
 		$output["data"][] = $devices;
 	}
-	
-	echoJson($output);
 	$result->close();
+	closeSqlInterface();
+
+	// print_r($output);
+	echoJson($output);
 }
 
 function getSetup() {
@@ -96,8 +101,10 @@ function getSetup() {
 	$setup = $result->fetch_assoc();
 	$output["data"] = $setup;
 	
-	echoJson($output);
 	$result->close();
+	closeSqlInterface();
+
+	echoJson($output);
 }
 
 function updateSetup() {
@@ -105,9 +112,22 @@ function updateSetup() {
 	$value = toValidSqlValue($_POST['value']);
 	
 	$sqlStatement = "UPDATE GreenAsh_Setup SET `$field` = '$value'";
-	$result = sqlCommand($sqlStatement);
+	updateSqlCommand($sqlStatement);
 
 	echoJson($_POST);
+}
+
+function getTotals() {
+	$sqlStatement .= "SELECT `GreenAsh_Device`.chipId, SUM(`GreenAsh_Log`.distance) FROM `GreenAsh_Device`,`GreenAsh_Log` WHERE `GreenAsh_Device`.chipId = `GreenAsh_Log`.chipId";
+	$result = sqlCommand($sqlStatement);
+	
+	while ($team = $result->fetch_assoc()) {
+		$output["data"]["teams"][] = $team;
+	}	
+	$result->close();
+	closeSqlInterface();
+
+	echoJson($output);
 }
 
 function getLog() {
@@ -116,7 +136,8 @@ function getLog() {
 	$output["data"] = array();
 	
 	$minTime = singleSqlCommand("SELECT timeOffset FROM GreenAsh_Setup");
-	$maxTime = singleSqlCommand("SELECT MAX(dateTime) FROM GreenAsh_Log");
+	// $maxTime = singleSqlCommand("SELECT MAX(dateTime) FROM GreenAsh_Log");
+	$maxTime = time();
 	
 	getTimeIntervals($minTime, $maxTime, $intervalMin, $intervalMax, $labels);
 	
@@ -136,8 +157,10 @@ function getLog() {
 	$output["data"]["labels"] = $labels;
 	while ($team = $result->fetch_assoc()) {
 		$output["data"]["teams"][] = $team;
-	}
-	
+	}	
+	$result->close();
+	closeSqlInterface();
+
 	echoJson($output);
 }
 
@@ -148,7 +171,7 @@ function getTimeIntervals($minTime, $maxTime, & $intervalMin, & $intervalMax, & 
 		for ($i = 0; $i < 12; $i++) { // 12min
 			$intervalMin[] = $minTime + ($i * 60);
 			$intervalMax[] = $minTime + (($i + 1) * 60) - 1;
-			$labels[] = $i . "min";
+			$labels[] = ($i + 1) . "min";
 		}
 		return;
 	}
@@ -156,7 +179,7 @@ function getTimeIntervals($minTime, $maxTime, & $intervalMin, & $intervalMax, & 
 		for ($i = 0; $i < 12; $i++) { // 1h
 			$intervalMin[] = $minTime + ($i * 300);
 			$intervalMax[] = $minTime + (($i + 1) * 300) - 1;
-			$labels[] = $i * 2 . "min";
+			$labels[] = ($i + 1) * 2 . "min";
 		}
 		return;
 	}
@@ -164,7 +187,7 @@ function getTimeIntervals($minTime, $maxTime, & $intervalMin, & $intervalMax, & 
 		for ($i = 0; $i < 12; $i++) {
 			$intervalMin[] = $minTime + ($i * 600);
 			$intervalMax[] = $minTime + (($i + 1) * 600) - 1;
-			$labels[] = $i * 4 . "min";
+			$labels[] = ($i + 1) * 4 . "min";
 		}
 		return;
 	}
@@ -172,7 +195,7 @@ function getTimeIntervals($minTime, $maxTime, & $intervalMin, & $intervalMax, & 
 		for ($i = 0; $i < 12; $i++) {
 			$intervalMin[] = $minTime + ($i * 1800);
 			$intervalMax[] = $minTime + (($i + 1) * 1800) - 1;
-			$labels[] = $i * 12 . "min";
+			$labels[] = ($i + 1) * 12 . "min";
 		}
 		return;
 	}
@@ -180,7 +203,7 @@ function getTimeIntervals($minTime, $maxTime, & $intervalMin, & $intervalMax, & 
 		for ($i = 0; $i < 12; $i++) {
 			$intervalMin[] = $minTime + ($i * 3600);
 			$intervalMax[] = $minTime + (($i + 1) * 3600) - 1;
-			$labels[] = $i . "h";
+			$labels[] = ($i + 1) . "h";
 		}
 		return;
 	}
@@ -188,7 +211,7 @@ function getTimeIntervals($minTime, $maxTime, & $intervalMin, & $intervalMax, & 
 		for ($i = 0; $i < 12; $i++) {
 			$intervalMin[] = $minTime + ($i * 7200);
 			$intervalMax[] = $minTime + (($i + 1) * 7200) - 1;
-			$labels[] = $i * 2 . "h";
+			$labels[] = ($i + 1) * 2 . "h";
 		}
 		return;
 	}
@@ -197,7 +220,7 @@ function getTimeIntervals($minTime, $maxTime, & $intervalMin, & $intervalMax, & 
 	for ($i = 0; $i < 12; $i++) {
 		$intervalMin[] = $minTime + ($i * $timeDifference / 12);
 		$intervalMax[] = $minTime + (($i + 1) * $timeDifference / 12) - 1;
-		$labels[] = round($i * ($timeDifference / 12 / 60 / 60), 2) . "h";
+		$labels[] = round(($i + 1) * ($timeDifference / 12 / 60 / 60), 2) . "h";
 	}
 }
 ?>

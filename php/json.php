@@ -1,9 +1,9 @@
 <?php
 function echoJson($output) {
-	echo json_encode($output); // changed, due to UTF-8 problems
+	// echo json_encode($output); // changed, due to UTF-8 problems
 	
-	// header('Content-Type: application/json; charset=utf-8');
-	// echo toJson($output);
+	header('Content-Type: application/json; charset=utf-8');
+	echo toJson($output);
 }
 	
 function toJson($output) {

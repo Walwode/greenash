@@ -43,7 +43,9 @@ CREATE TABLE IF NOT EXISTS `GreenAsh_Log` (
   `distance` double NOT NULL COMMENT '[m]',
   `speed` double NOT NULL COMMENT '[km/h]',
   `cumulatedDistance` double NOT NULL,
-  PRIMARY KEY (`entryNo`)
+  PRIMARY KEY (`entryNo`),
+  UNIQUE KEY `Chip DateTime` (`chipId`,`dateTime`),
+  KEY `DateTime Only` (`dateTime`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2129 ;
 
 
