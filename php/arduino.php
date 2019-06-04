@@ -16,7 +16,7 @@ switch ($action) {
 function getChipData() {
 	if ($chipId = $_GET['chipId']) $whereStatement = "WHERE chipId = '$chipId'";
 	
-	$sql = "SELECT * FROM GreenAsh_Device $whereStatement";
+	$sql = "SELECT diameter, faintInterval, pushInterval, hasOled  FROM GreenAsh_Device $whereStatement";
 	$result = sqlCommand($sql);
 	
 	$output = array();

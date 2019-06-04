@@ -16,7 +16,7 @@ function getSetup() {
 		var setup = data.data;
 		var setupContainer = $(`#setup-container`);
 		var setupTitle = $(`<div>Titel: <a>${setup.title}</a></div>`);
-		var setupTimeOffset = $(`<div>Event Startzeit:<a>${timestampToText(setup.timeOffset)}</a></div>`);
+		var setupTimeOffset = $(`<div>Event Startzeit: <a>${timestampToText(setup.timeOffset)}</a></div>`);
 		
 		setupContainer.append(setupTitle);
 		setupContainer.append(setupTimeOffset);

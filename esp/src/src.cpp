@@ -18,7 +18,7 @@ Ticker ticker;
 
 // internet values
 char* data_name;
-int data_diameter = 80; // [mm]
+int data_diameter = 0; // [mm]
 int data_faintInterval = 30; // [ms]
 int data_pushInterval = 1000; // [ms]
 boolean data_hasOled = false;
@@ -28,14 +28,14 @@ volatile byte interruptCounter = 0;
 volatile double currentInterrupt, lastInterrupt;
 
 // globales
-#define SPEED_AVG_COUNT 5
-double circumference;
-double cumulatedDistance;
+#define SPEED_AVG_COUNT 3
+double circumference; // [mm]
+double distance; // [m]
+double speed[SPEED_AVG_COUNT]; // [km/h]
+int lastSpeedIndex;
+double cumulatedDistance; // [m]
 double cumulatedInterruptCounter;
 double currentMillis, lastMillis;
-double distance;
-double speed[SPEED_AVG_COUNT];
-int lastSpeedIndex;
 String url;
 
 void handleInterrupt();
@@ -49,6 +49,7 @@ void calculateSpeed();
 double getAverageSpeed();
 void updateDisplay();
 void sendWiFi();
+void displayData();
 
 void setup() {
   Serial.begin(115200);
@@ -58,6 +59,7 @@ void setup() {
   getConfiguration();
   setupSpeed();
   setupDisplay();
+
 }
 
 void loop() {
@@ -106,14 +108,16 @@ void getConfiguration() {
   ticker.attach(2.0, tick);
   while (data_diameter == 0) {
     if (WiFi.status() == WL_CONNECTED) {
+      WiFiClient client;
       HTTPClient http; // Object of class HTTPClient
       url = API_URL;
       url += "?action=get";
       url += "&chipId=" + String(ESP.getChipId());
-      http.begin(url);
+      http.begin(client, url);
       Serial.println("[API] Get configuration: " + url);
       int httpCode = http.GET();
       if (httpCode > 0) {
+        Serial.println(http.getString());
 
         const size_t capacity = JSON_ARRAY_SIZE(1) + JSON_OBJECT_SIZE(2) + JSON_OBJECT_SIZE(8) + 190;
         DynamicJsonDocument doc(capacity);
@@ -127,12 +131,14 @@ void getConfiguration() {
         data_hasOled = data_0["hasOled"]; // "0"
 
         Serial.println("[API] Configuration received");
+        displayData();
+
       } else {
         Serial.println("[API] Config. http error: " + http.errorToString(httpCode));
       }
       http.end(); // Close connection
     } else ESP.reset();
-    if (data_diameter == 0) delay(1000);
+    if (data_diameter == 0) delay(2000);
   }
   ticker.detach();
   digitalWrite(2, LOW);
@@ -144,8 +150,6 @@ void setupSpeed() {
   circumference = PI * data_diameter; // U = 2*pi*r
   
   Serial.println("Created interrupts");
-  Serial.print("Circumference: ");
-  Serial.println(circumference);
 }
 
 void setupDisplay() {
@@ -196,6 +200,7 @@ void updateDisplay() {
 
 void sendWiFi() {
   if (WiFi.status() == WL_CONNECTED) {
+      WiFiClient client;
       HTTPClient http; // Object of class HTTPClient
       url = API_URL;
       url += "?action=log";
@@ -203,7 +208,7 @@ void sendWiFi() {
       url += "&distance=" + String(distance);
       url += "&speed=" + String(getAverageSpeed());
       url += "&cumulatedDistance=" + String(cumulatedDistance);
-      http.begin(url);
+      http.begin(client, url);
       int httpCode = http.GET();
       if (httpCode > 0) {
         Serial.println("[API] Uploaded data: " + url);
@@ -211,3 +216,17 @@ void sendWiFi() {
   } else ESP.reset();
 }
 
+void displayData() {
+  Serial.print("Push Interval ");
+  Serial.print(data_pushInterval);
+  Serial.println("ms");
+  Serial.print("Faint Interval ");
+  Serial.print(data_faintInterval);
+  Serial.println("ms");
+  Serial.print("Diameter ");
+  Serial.print(data_diameter);
+  Serial.println("mm");
+  Serial.print("Circumference ");
+  Serial.print(circumference);
+  Serial.println("mm");
+}
