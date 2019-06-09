@@ -69,6 +69,8 @@ function createTeamRow(team) {
 function updateTeamRow(team, teamRow) {
 	teamRow.find('.team-heartbeat').text(timestampToText(team.heartbeat));
 	teamRow.find('.team-color').css('background-color', team.colorCode);
+	teamRow.find('.team-distance').text(team.distance / 1000);
+	teamRow.find('.team-speed').text(team.speed);
 }
 
 function removeQuotes(str) {
