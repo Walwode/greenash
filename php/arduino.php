@@ -39,6 +39,18 @@ function logDeviceData() {
 	$speed				= toValidSqlValue($_GET['speed']);
 	$cumulatedDistance	= toValidSqlValue($_GET['cumulatedDistance']);
 	
-	if (updateSqlCommand("INSERT INTO GreenAsh_Log (chipId, dateTime, distance, speed, cumulatedDistance) VALUES ('$chipId', '$dateTime', '$distance','$speed', '$cumulatedDistance')")) echo "Entry created";
+	$sqlDateTime = $dateTime - ($dateTime % 60);
+
+	$sql = "SELECT * FROM GreenAsh_Log WHERE chipId = '$chipId' AND dateTime = '$sqlDateTime'";
+	$result = sqlCommand($sql);
+
+	if ($entry = $result->fetch_assoc()) {
+		$distance += $entry['distance'];
+		updateSqlCommand("UPDATE GreenAsh_Log SET distance = '$distance', speed = '$speed', cumulatedDistance = '$cumulatedDistance' WHERE chipId = '$chipId' AND dateTime = '$sqlDateTime'");
+		echo "Entry updated";
+	} else {
+		updateSqlCommand("INSERT INTO GreenAsh_Log (chipId, dateTime, distance, speed, cumulatedDistance) VALUES ('$chipId', '$sqlDateTime', '$distance','$speed', '$cumulatedDistance')");
+		echo "Entry created";
+	}
 }
 ?>

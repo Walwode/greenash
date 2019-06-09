@@ -33,8 +33,7 @@ function singleSqlCommand($sqlStatement) {
 
 function updateSqlCommand($sqlStatement) {
 	$result = sqlCommand($sqlStatement);
-	$result->close();
-	closeSqlConnection();
+	// closeSqlConnection();
 }
 
 function closeSqlInterface() {

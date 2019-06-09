@@ -57,23 +57,6 @@ a {
 	height: 50%;
 }
 
-
-.team-container-left {
-    width: 33%;
-	height: 128px;
-	float: left;
-}
-
-.team-container-inlay {
-    background-color: #f1f1f1;
-	height: 90px;
-    margin-top: 12px;
-    margin-left: 12px;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    padding-left: 12px;
-}
-
 .team-color {
     float: left;
     height: 100%;
@@ -81,40 +64,12 @@ a {
     width: 20px;
 }
 
-.team-name {
-	float: left;
-	font-size: 1.2em;
-	font-weight: bold;
-	height: 60%;
-	padding-right: 10px;
+#setup-container {
+	padding: 0.4em;
 }
 
-.team-distance {
-	font-size: 1.8em;
-	float: left;
-	background-image: url('../images/distance.png');
-	background-repeat: no-repeat;
-	background-size: 27px 27px;
-	padding-left: 40px;  /* width of the image plus a little extra padding */
-	display: block;  /* may not need this, but I've found I do */
-}
-
-.team-pace {
-	font-size: 1.8em;
-	float: right;
-	padding-right: 20px;
-	background-image: url('../images/speed.svg');
-	background-repeat: no-repeat;
-	background-size: 30px 30px;
-	padding-left: 40px;  /* width of the image plus a little extra padding */
-	display: block;  /* may not need this, but I've found I do */
-}
-
-.chart-name {
-	text-align: center;
-	font-size: 2em;
-	font-weight: bold;
-	padding-bottom: 50px;
+.table td, .table th {
+	padding: 0.4em;
 }
 
 .gold {

@@ -33,6 +33,8 @@
 			<th title="Soll Team in Diagrammen angezeigt werden?">Aktiv</th>
 			<th title="Farbcode für Diagramm, z.B. #DDE54E oder rgb(125, 255, 000, 1)">Farbcode</th>
 			<th title="Letzter Log-Eintrag">Aktivit&auml;t</th>
+			<th title="Gesamtdistanz seit Event Startzeit">[km]</th>
+			<th title="Atuelle Geschwindigkeit">[km/h]</th>
 			<th title="Durchmesser der Rolle/Rad in Millimeter">DM<br/>[mm]</th>
 			<th title="Abtast-Timeout-Intervall - Timeout zwischen zwei Interrupt-Signalen in Millisekunden (20ms scheint zu wenig, 50ms ist zu viel)">A-Int.<br/>[ms]</th>
 			<th title="Push-Intervall - Pause zwischen dem Senden der Informationen vom Chip an die Datenbank">P-Int.<br/>[ms]</th>

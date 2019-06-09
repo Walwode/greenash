@@ -26,9 +26,6 @@ switch ($action) {
 	case 'deleteLog':
 		deleteLog();
 		break;
-	case 'getTotals':
-		getTotals();
-		break;
 }
 
 function updateTeam() {
@@ -77,9 +74,10 @@ function getTeams() {
 	$output["version"] = "1.0";
 	$output["data"] = array();
 	
-	$sqlStatement = "SELECT *, (SELECT datetime FROM GreenAsh_Log WHERE GreenAsh_Log.chipId = GreenAsh_Device.chipId ORDER BY datetime DESC LIMIT 1) AS heartbeat FROM GreenAsh_Device";
+	$sqlStatement = "SELECT *, (SELECT SUM(distance) FROM GreenAsh_Log, GreenAsh_Setup WHERE (GreenAsh_Log.chipId = GreenAsh_Device.chipId) AND (GreenAsh_Log.dateTime >= GreenAsh_Setup.timeOffset)) AS distance, (SELECT datetime FROM GreenAsh_Log WHERE GreenAsh_Log.chipId = GreenAsh_Device.chipId ORDER BY datetime DESC LIMIT 1) AS heartbeat, (SELECT speed FROM GreenAsh_Log WHERE GreenAsh_Log.chipId = GreenAsh_Device.chipId ORDER BY datetime DESC LIMIT 1) AS speed FROM GreenAsh_Device";
 	$result = sqlCommand($sqlStatement);
 	
+	$output["query"] = $sqlStatement;
 	while ($devices = $result->fetch_assoc()) {
 		$output["data"][] = $devices;
 	}
@@ -99,6 +97,7 @@ function getSetup() {
 	$result = sqlCommand($sqlStatement);
 	
 	$setup = $result->fetch_assoc();
+	$output["query"] = $sqlStatement;
 	$output["data"] = $setup;
 	
 	$result->close();
@@ -115,19 +114,6 @@ function updateSetup() {
 	updateSqlCommand($sqlStatement);
 
 	echoJson($_POST);
-}
-
-function getTotals() {
-	$sqlStatement .= "SELECT `GreenAsh_Device`.chipId, SUM(`GreenAsh_Log`.distance) FROM `GreenAsh_Device`,`GreenAsh_Log` WHERE `GreenAsh_Device`.chipId = `GreenAsh_Log`.chipId";
-	$result = sqlCommand($sqlStatement);
-	
-	while ($team = $result->fetch_assoc()) {
-		$output["data"]["teams"][] = $team;
-	}	
-	$result->close();
-	closeSqlInterface();
-
-	echoJson($output);
 }
 
 function getLog() {
@@ -154,6 +140,7 @@ function getLog() {
 	$sqlStatement .= "FROM `GreenAsh_Device`";
 	$result = sqlCommand($sqlStatement);
 	
+	$output["query"] = $sqlStatement;
 	$output["data"]["labels"] = $labels;
 	while ($team = $result->fetch_assoc()) {
 		$output["data"]["teams"][] = $team;
